@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shamikh Labs — واجهة الرفع السريعة</title>
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: #0e1626;
+      --panel-2: #131f35;
+      --border: #1e2d48;
+      --text: #e6edf7;
+      --muted: #93a4be;
+      --cyan: #22d3ee;
+      --cyan-dim: rgba(34, 211, 238, 0.14);
+      --ok: #22c55e;
+      --warn: #eab308;
+      --err: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 14px;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .header h1 {
+      margin: 0 0 4px;
+      font-size: 18px;
+      color: var(--cyan);
+      letter-spacing: 0.3px;
+    }
+
+    .header p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--cyan);
+    }
+
+    textarea {
+      min-height: 84px;
+      resize: vertical;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--cyan-dim);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    button.primary {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 9px;
+      background: var(--cyan);
+      color: #041019;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      width: 100%;
+      padding: 10px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--panel-2);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--cyan);
+      transition: width 0.25s ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .events {
+      background: #050811;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 10px;
+      max-height: 165px;
+      overflow-y: auto;
+      font-size: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .ev-item { margin-bottom: 4px; }
+    .ev-ok { color: var(--ok); }
+    .ev-warn { color: var(--warn); }
+    .ev-err { color: var(--err); }
+    .ev-info { color: var(--cyan); }
+
+    .sha-box {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- العنوان -->
+    <div class="card header">
+      <h1>SHAMIKH LABS — بوابة الرفع السريعة</h1>
+      <p>واجهة ويب ثابتة متصلة بـ Google Apps Script وDrive وSheets</p>
+    </div>
+
+    <!-- إعدادات الاتصال (تُحفظ محلياً في المتصفح) -->
+    <div class="card">
+      <div class="grid-2">
+        <div>
+          <label for="gasUrl">رابط Google Apps Script (Web App URL)</label>
+          <input id="gasUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec" />
+        </div>
+        <div>
+          <label for="authToken">رمز الدخول السري (Token)</label>
+          <input id="authToken" type="password" placeholder="أدخل الرمز السري" />
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="secondary" type="button" id="saveCfgBtn">حفظ الإعدادات محلياً واختبار الاتصال</button>
+      </div>
+    </div>
+
+    <!-- التقدم وسجل الأحداث -->
+    <div class="card">
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">0% — جاهز</div>
+      <div class="events" id="eventsBox">
+        <div class="ev-item"><span class="ev-info">[INFO]</span> الواجهة جاهزة على المتصفح.</div>
+      </div>
+    </div>
+
+    <!-- التبديل بين إنشاء سجل ورفع ملف دليل -->
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-btn active" type="button" data-tab="record">إنشاء سجل جديد</button>
+        <button class="tab-btn" type="button" data-tab="evidence">رفع دليل (Evidence)</button>
+      </div>
+    </div>
+
+    <!-- تبويب إنشاء سجل -->
+    <form class="card" id="recordForm">
+      <div class="grid-2">
+        <div>
+          <label for="recType">نوع السجل</label>
+          <select id="recType">
+            <option value="Quick Capture">Quick Capture</option>
+            <option value="Technical Knowledge Report">Technical Knowledge Report</option>
+            <option value="Practical Lab Report">Practical Lab Report</option>
+            <option value="Problem and Solution Record">Problem and Solution Record</option>
+            <option value="Project Record">Project Record</option>
+            <option value="Code and Script Documentation">Code and Script Documentation</option>
+          </select>
+        </div>
+        <div>
+          <label for="recDomain">المجال (Domain)</label>
+          <select id="recDomain">
+            <option value="Networking">Networking</option>
+            <option value="Cybersecurity">Cybersecurity</option>
+            <option value="AI_and_Machine_Learning">AI_and_Machine_Learning</option>
+            <option value="Programming_and_Development">Programming_and_Development</option>
+            <option value="Operating_Systems_and_Linux">Operating_Systems_and_Linux</option>
+            <option value="Databases">Databases</option>
+            <option value="Cloud_and_DevOps">Cloud_and_DevOps</option>
+            <option value="Virtualization_and_Containers">Virtualization_and_Containers</option>
+            <option value="Mobile_and_Android">Mobile_and_Android</option>
+            <option value="IT_Tools_and_Automation">IT_Tools_and_Automation</option>
+            <option value="Other_Technical_Knowledge">Other_Technical_Knowledge</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <label for="recTitle">العنوان *</label>
+        <input id="recTitle" type="text" required placeholder="مثال: ضبط VLANs في GNS3" />
+      </div>
+
+      <div style="margin-top:10px;">
+        <label for="recDesc">الوصف / الملخص</label>
+        <textarea id="recDesc" placeholder="اكتب ملخصاً واضحاً أو ملاحظة سريعة..."></textarea>
+      </div>
+
+      <div style="margin-top:10px;">
+        <label for="recCmds">الأوامر أو الكود (اختياري)</label>
+        <textarea id="recCmds" placeholder="أوامر الطرفية أو مقتطف الكود..."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="primary" type="submit" id="createRecBtn">إرسال وحفظ السجل</button>
+      </div>
+    </form>
+
+    <!-- تبويب رفع دليل -->
+    <form class="card hidden" id="evidenceForm">
+      <div class="grid-2">
+        <div>
+          <label for="evRecordId">رقم السجل (Record ID) *</label>
+          <input id="evRecordId" type="text" required placeholder="مثال: REC-20261121-4538C7 أو LAB-..." />
+        </div>
+        <div>
+          <label for="evDesc">وصف الدليل</label>
+          <input id="evDesc" type="text" placeholder="مثال: لقطة شاشة للنتيجة أو سجل تشغيل" />
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <label for="evFile">اختر الملف *</label>
+        <input id="evFile" type="file" required />
+        <div class="sha-box" id="shaPreview">SHA-256: لم يتم اختيار ملف بعد</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="primary" type="submit" id="uploadEvBtn">حساب SHA-256 ورفع الملف</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const STORAGE_URL_KEY = "shamikh_gas_url_v1";
+    const STORAGE_TOK_KEY = "shamikh_gas_tok_v1";
+
+    const gasUrlEl = document.getElementById("gasUrl");
+    const authTokenEl = document.getElementById("authToken");
+    const saveCfgBtn = document.getElementById("saveCfgBtn");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const eventsBox = document.getElementById("eventsBox");
+    const recordForm = document.getElementById("recordForm");
+    const evidenceForm = document.getElementById("evidenceForm");
+    const evFileEl = document.getElementById("evFile");
+    const shaPreviewEl = document.getElementById("shaPreview");
+
+    // استرجاع الإعدادات المحفوظة محلياً
+    gasUrlEl.value = localStorage.getItem(STORAGE_URL_KEY) || "";
+    authTokenEl.value = localStorage.getItem(STORAGE_TOK_KEY) || "";
+
+    function setProgress(pct, msg) {
+      const clamped = Math.max(0, Math.min(100, pct));
+      progressFill.style.width = clamped + "%";
+      progressText.textContent = `${clamped}% — ${msg}`;
+    }
+
+    function pushEvent(level, msg) {
+      const now = new Date().toTimeString().slice(0, 8);
+      const cls = level === "OK" ? "ev-ok" : level === "WARN" ? "ev-warn" : level === "ERR" ? "ev-err" : "ev-info";
+      const div = document.createElement("div");
+      div.className = "ev-item";
+      div.innerHTML = `<span style="color:#64748b">[${now}]</span> <span class="${cls}">[${level}]</span> ${escapeHtml(msg)}`;
+      eventsBox.appendChild(div);
+      eventsBox.scrollTop = eventsBox.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // تبديل التبويبات
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const tab = btn.dataset.tab;
+        recordForm.classList.toggle("hidden", tab !== "record");
+        evidenceForm.classList.toggle("hidden", tab !== "evidence");
+        pushEvent("INFO", `تم فتح تبويب: ${btn.textContent.trim()}`);
+      });
+    });
+
+    // حساب SHA-256 في المتصفح
+    async function computeSha256Hex(arrayBuffer) {
+      const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function arrayBufferToBase64(buffer) {
+      const bytes = new Uint8Array(buffer);
+      let binary = "";
+      const chunkSize = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+      }
+      return btoa(binary);
+    }
+
+    evFileEl.addEventListener("change", async () => {
+      const file = evFileEl.files[0];
+      if (!file) {
+        shaPreviewEl.textContent = "SHA-256: لم يتم اختيار ملف بعد";
+        return;
+      }
+      const buf = await file.arrayBuffer();
+      const hex = await computeSha256Hex(buf);
+      shaPreviewEl.textContent = `SHA-256 (${file.size} bytes): ${hex}`;
+    });
+
+    // إرسال الطلب إلى Google Apps Script (استخدام text/plain لتجنب مشاكل preflight CORS)
+    async function callAppsScript(payload) {
+      const url = gasUrlEl.value.trim();
+      const token = authTokenEl.value.trim();
+      if (!url) {
+        throw new Error("يرجى إدخال رابط Google Apps Script أولاً.");
+      }
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ ...payload, token }),
+      });
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error("رد غير متوقع من Apps Script. تأكد من نشره كـ Web App بصلاحية الوصول المناسبة.");
+      }
+      if (!data.ok) {
+        throw new Error(data.error || "فشل تنفيذ العملية في Apps Script.");
+      }
+      return data;
+    }
+
+    saveCfgBtn.addEventListener("click", async () => {
+      localStorage.setItem(STORAGE_URL_KEY, gasUrlEl.value.trim());
+      localStorage.setItem(STORAGE_TOK_KEY, authTokenEl.value.trim());
+      pushEvent("INFO", "تم حفظ الإعدادات محلياً. جاري فحص الاتصال...");
+      setProgress(35, "فحص الاتصال...");
+      try {
+        const res = await callAppsScript({ action: "ping" });
+        setProgress(100, "الاتصال ناجح");
+        pushEvent("OK", res.message || "تم الاتصال بـ Apps Script بنجاح.");
+      } catch (err) {
+        setProgress(0, "تعذّر الاتصال");
+        pushEvent("ERR", err.message);
+      }
+    });
+
+    recordForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("createRecBtn");
+      btn.disabled = true;
+      try {
+        setProgress(30, "إرسال بيانات السجل...");
+        pushEvent("INFO", "جاري إنشاء السجل...");
+        const data = await callAppsScript({
+          action: "create_record",
+          record_type: document.getElementById("recType").value,
+          domain: document.getElementById("recDomain").value,
+          title: document.getElementById("recTitle").value.trim(),
+          description: document.getElementById("recDesc").value,
+          commands: document.getElementById("recCmds").value,
+        });
+        setProgress(100, "تم حفظ السجل");
+        pushEvent("OK", `تم إنشاء السجل: ${data.record_id || "تم"}`);
+        recordForm.reset();
+      } catch (err) {
+        setProgress(0, "فشل حفظ السجل");
+        pushEvent("ERR", err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    evidenceForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("uploadEvBtn");
+      const file = evFileEl.files[0];
+      if (!file) return;
+      btn.disabled = true;
+      try {
+        setProgress(25, "قراءة الملف وحساب البصمة...");
+        const buf = await file.arrayBuffer();
+        const sha256 = await computeSha256Hex(buf);
+        const base64Data = arrayBufferToBase64(buf);
+
+        setProgress(65, "رفع الملف إلى Google Drive...");
+        pushEvent("INFO", `جاري رفع ${file.name}...`);
+        const data = await callAppsScript({
+          action: "upload_evidence",
+          record_id: document.getElementById("evRecordId").value.trim(),
+          description: document.getElementById("evDesc").value.trim(),
+          filename: file.name,
+          mime: file.type || "application/octet-stream",
+          size_bytes: file.size,
+          sha256,
+          base64_data: base64Data,
+        });
+
+        setProgress(100, "تم رفع الدليل");
+        pushEvent("OK", `تم رفع ${file.name} (${data.status || "uploaded"})`);
+        evidenceForm.reset();
+        shaPreviewEl.textContent = "SHA-256: لم يتم اختيار ملف بعد";
+      } catch (err) {
+        setProgress(0, "فشل رفع الدليل");
+        pushEvent("ERR", err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
