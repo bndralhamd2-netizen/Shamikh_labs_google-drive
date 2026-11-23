@@ -1,1 +1,1841 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>SHAMIKH LABS — Technical Knowledge Management System v3.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-app: #f4f6f9;
+      --bg-surface: #ffffff;
+      --bg-subtle: #eef2f6;
+      --bg-hover: #e6ecf3;
+      --text-primary: #0f2537;
+      --text-secondary: #4b5d6b;
+      --text-muted: #6e8090;
+      --border-color: #d7dfe8;
+      --border-strong: #bcc8d6;
 
+      --primary: #0f294a;
+      --primary-hover: #173b69;
+      --secondary: #475569;
+      --accent: #1d6fd8;
+      --accent-hover: #1558b0;
+      --accent-soft: rgba(29, 111, 216, 0.1);
+
+      --success: #15803d;
+      --success-soft: rgba(21, 128, 61, 0.12);
+      --warning: #b45309;
+      --warning-soft: rgba(180, 83, 9, 0.12);
+      --danger: #b91c1c;
+      --danger-soft: rgba(185, 28, 28, 0.12);
+
+      --font-sans: "IBM Plex Sans Arabic", "Inter", system-ui, -apple-system, sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 2px rgba(15, 37, 55, 0.05);
+      --shadow-md: 0 4px 14px rgba(15, 37, 55, 0.07);
+      --sidebar-w: 268px;
+      --topbar-h: 64px;
+    }
+
+    [data-theme="dark"] {
+      --bg-app: #0b131e;
+      --bg-surface: #121d2b;
+      --bg-subtle: #182638;
+      --bg-hover: #203147;
+      --text-primary: #edf2f7;
+      --text-secondary: #b4c2d1;
+      --text-muted: #8395a7;
+      --border-color: #24354a;
+      --border-strong: #324964;
+
+      --primary: #1b3f6e;
+      --primary-hover: #25528c;
+      --secondary: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-soft: rgba(59, 130, 246, 0.16);
+
+      --success: #22c55e;
+      --success-soft: rgba(34, 197, 94, 0.15);
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.15);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.15);
+
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      max-width: 100%;
+      overflow-x: hidden;
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    code, pre, .mono {
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+      direction: ltr;
+      unicode-bidi: isolate;
+    }
+
+    pre {
+      margin: 0;
+      padding: 12px 14px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .app-shell { display: flex; min-height: 100vh; width: 100%; }
+
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--bg-surface);
+      border-inline-end: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 40;
+    }
+
+    .brand-box { padding: 18px 18px 14px; border-bottom: 1px solid var(--border-color); }
+    .brand-kicker { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: var(--accent); text-transform: uppercase; }
+    .brand-title { margin: 2px 0 0; font-size: 17px; font-weight: 700; color: var(--text-primary); }
+    .brand-sub { margin: 2px 0 0; font-size: 12px; color: var(--text-secondary); }
+
+    .nav-list { padding: 12px 10px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex: 1; }
+
+    .nav-btn {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 12px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 500;
+      text-align: start;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+    .nav-btn.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; border-color: rgba(29, 111, 216, 0.22); }
+
+    .sidebar-footer { padding: 12px 14px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted); }
+
+    .main-column { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+    .topbar {
+      height: var(--topbar-h);
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+    .menu-toggle {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      font-size: 18px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .page-heading { margin: 0; font-size: 18px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+    }
+
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+    .status-pill.ok { color: var(--success); background: var(--success-soft); border-color: rgba(21, 128, 61, 0.25); }
+    .status-pill.ok .status-dot { background: var(--success); }
+    .status-pill.err { color: var(--danger); background: var(--danger-soft); border-color: rgba(185, 28, 28, 0.25); }
+    .status-pill.err .status-dot { background: var(--danger); }
+
+    .icon-btn {
+      min-height: 38px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .icon-btn:hover { background: var(--bg-subtle); }
+
+    .content-area { padding: 22px; max-width: 1240px; width: 100%; margin: 0 auto; }
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    .section-header { margin-bottom: 18px; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
+    .section-title { margin: 0; font-size: 21px; font-weight: 700; color: var(--text-primary); }
+    .section-desc { margin: 4px 0 0; font-size: 14px; color: var(--text-secondary); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .card-title { margin: 0 0 6px; font-size: 16px; font-weight: 700; color: var(--text-primary); }
+    .card-subtitle { margin: 0 0 14px; font-size: 13px; color: var(--text-secondary); }
+
+    .kpi-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 16px; box-shadow: var(--shadow-sm); }
+    .kpi-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+    .kpi-value { margin-top: 6px; font-size: 24px; font-weight: 700; color: var(--primary); font-family: var(--font-mono); }
+    [data-theme="dark"] .kpi-value { color: var(--text-primary); }
+    .kpi-note { margin-top: 4px; font-size: 11px; color: var(--text-muted); }
+
+    .form-group { margin-bottom: 14px; }
+    .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .hint { display: block; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="url"],
+    input[type="search"],
+    select,
+    textarea {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    textarea { min-height: 110px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+    .btn {
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #ffffff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-navy { background: var(--primary); color: #ffffff; }
+    .btn-navy:hover:not(:disabled) { background: var(--primary-hover); }
+    .btn-secondary { background: var(--bg-subtle); color: var(--text-primary); border-color: var(--border-strong); }
+    .btn-secondary:hover:not(:disabled) { background: var(--bg-hover); }
+    .btn-danger { background: var(--danger-soft); color: var(--danger); border-color: rgba(185, 28, 28, 0.3); }
+
+    .feedback-box { padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-subtle); font-size: 13.5px; margin-top: 12px; display: none; }
+    .feedback-box.show { display: block; }
+    .feedback-box.ok { background: var(--success-soft); border-color: rgba(21, 128, 61, 0.3); color: var(--text-primary); }
+    .feedback-box.warn { background: var(--warning-soft); border-color: rgba(180, 83, 9, 0.3); color: var(--text-primary); }
+    .feedback-box.err { background: var(--danger-soft); border-color: rgba(185, 28, 28, 0.3); color: var(--text-primary); }
+
+    .tabs-bar { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 14px; }
+    .tab-chip { min-height: 38px; padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-subtle); color: var(--text-secondary); font-family: var(--font-sans); font-size: 13px; font-weight: 600; cursor: pointer; }
+    .tab-chip.active { background: var(--primary); color: #ffffff; border-color: var(--primary); }
+
+    details.accordion { border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-subtle); padding: 10px 14px; margin-bottom: 12px; }
+    details.accordion > summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--text-primary); list-style: none; }
+    details.accordion > .acc-body { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border-color); }
+
+    .table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-sm); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th, td { padding: 10px 12px; text-align: start; border-bottom: 1px solid var(--border-color); vertical-align: top; }
+    th { background: var(--bg-subtle); font-weight: 700; color: var(--text-secondary); white-space: nowrap; }
+    tr:last-child td { border-bottom: none; }
+
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: var(--bg-subtle); color: var(--text-secondary); border: 1px solid var(--border-color); }
+    .badge.ok { background: var(--success-soft); color: var(--success); border-color: transparent; }
+    .badge.warn { background: var(--warning-soft); color: var(--warning); border-color: transparent; }
+
+    .progress-track { height: 8px; width: 100%; background: var(--bg-subtle); border-radius: 999px; overflow: hidden; margin-top: 6px; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; }
+
+    .log-stream { max-height: 260px; overflow-y: auto; background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 12px; font-family: var(--font-mono); font-size: 12px; direction: ltr; text-align: left; }
+    .log-line { padding: 2px 0; border-bottom: 1px dashed rgba(128, 128, 128, 0.15); word-break: break-word; }
+    .log-line:last-child { border-bottom: none; }
+    .log-ok { color: var(--success); font-weight: 600; }
+    .log-err { color: var(--danger); font-weight: 600; }
+    .log-warn { color: var(--warning); font-weight: 600; }
+    .log-info { color: var(--text-secondary); }
+
+    .preview-box { margin-top: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-subtle); }
+    .preview-box img { max-width: 100%; max-height: 260px; border-radius: var(--radius-sm); display: block; margin-top: 8px; }
+
+    .backdrop { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 35; }
+    .backdrop.show { display: block; }
+
+    @media (max-width: 960px) {
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 780px) {
+      .sidebar { position: fixed; inset-inline-start: 0; transform: translateX(100%); transition: transform 0.22s ease; }
+      html[dir="ltr"] .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .menu-toggle { display: inline-flex; }
+      .grid-2, .form-row { grid-template-columns: 1fr; }
+      .content-area { padding: 14px; }
+      .topbar { padding: 0 12px; }
+      .btn { width: 100%; }
+      .btn-row .btn { flex: 1 1 auto; }
+    }
+  </style>
+</head>
+<body>
+  <div id="drawerBackdrop" class="backdrop" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <aside id="sidebar" class="sidebar" aria-label="التنقل الرئيسي">
+      <div class="brand-box">
+        <div class="brand-kicker">SHAMIKH LABS • v3.0</div>
+        <h1 class="brand-title">منصة المعرفة التقنية</h1>
+        <p class="brand-sub">إدارة المعرفة، المهارات، التجارب والأدلة</p>
+      </div>
+
+      <nav class="nav-list" role="tablist">
+        <button type="button" class="nav-btn active" data-view="dashboard"><span>لوحة التحكم (Dashboard)</span></button>
+        <button type="button" class="nav-btn" data-view="knowledge"><span>إدارة المعرفة (Knowledge)</span></button>
+        <button type="button" class="nav-btn" data-view="skills"><span>المهارات (Skills)</span></button>
+        <button type="button" class="nav-btn" data-view="experiments"><span>التجارب والمشاريع (Labs)</span></button>
+        <button type="button" class="nav-btn" data-view="evidence"><span>مدير الأدلة (Evidence)</span></button>
+        <button type="button" class="nav-btn" data-view="reports"><span>مولّد التقارير (Reports)</span></button>
+        <button type="button" class="nav-btn" data-view="system"><span>إدارة النظام (System)</span></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div>وضع القراءة فقط عند الفتح — لا كتابة تلقائية</div>
+        <div class="mono" style="margin-top: 4px;">Apps Script + Drive + Sheets</div>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="menuToggleBtn" type="button" class="menu-toggle" aria-label="فتح القائمة">☰</button>
+          <h2 id="topbarTitle" class="page-heading">لوحة التحكم (Dashboard)</h2>
+        </div>
+
+        <div class="topbar-right">
+          <div id="connPill" class="status-pill" title="حالة الاتصال بالخادم">
+            <span class="status-dot"></span>
+            <span id="connPillText">غير متصل</span>
+          </div>
+          <button id="themeToggleBtn" type="button" class="icon-btn" title="تبديل الوضع الفاتح والداكن">داكن / فاتح</button>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <section id="view-dashboard" class="view-section active">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">نظرة عامة على النظام</h3>
+              <p class="section-desc">ملخص حي مستمد من بياناتك الفعلية دون أرقام ثابتة أو افتراضية.</p>
+            </div>
+            <div class="btn-row">
+              <button type="button" class="btn btn-secondary" id="btnRefreshOverview">تحديث المؤشرات (قراءة فقط)</button>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-label">Total Knowledge Records</div>
+              <div id="kpiRecords" class="kpi-value">—</div>
+              <div class="kpi-note" id="kpiRecordsNote">بانتظار مزامنة البيانات</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Total Skills</div>
+              <div id="kpiSkills" class="kpi-value">—</div>
+              <div class="kpi-note" id="kpiSkillsNote">بانتظار مزامنة البيانات</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Total Experiments</div>
+              <div id="kpiExperiments" class="kpi-value">—</div>
+              <div class="kpi-note" id="kpiExperimentsNote">بانتظار مزامنة البيانات</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Total Projects</div>
+              <div id="kpiProjects" class="kpi-value">—</div>
+              <div class="kpi-note" id="kpiProjectsNote">بانتظار مزامنة البيانات</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Total Evidence Files</div>
+              <div id="kpiEvidence" class="kpi-value">—</div>
+              <div class="kpi-note" id="kpiEvidenceNote">بانتظار مزامنة البيانات</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h4 class="card-title">تقدّم التعلّم (Learning Progress)</h4>
+              <p class="card-subtitle">يُحسب تلقائياً من السجلات والمهارات المحمّلة فعلياً.</p>
+              <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                <span>نسبة الإنجاز الموثقة</span>
+                <strong id="learningProgressLabel" class="mono">0%</strong>
+              </div>
+              <div class="progress-track">
+                <div id="learningProgressBar" class="progress-fill" style="width: 0%;"></div>
+              </div>
+              <p id="learningProgressSummary" class="hint" style="margin-top: 10px;">
+                لم يتم تحميل سجلات أو مهارات بعد. اضغط «تحديث المؤشرات» أو افتح قسم إدارة المعرفة.
+              </p>
+            </div>
+
+            <div class="card">
+              <h4 class="card-title">إجراءات سريعة (Quick Actions)</h4>
+              <p class="card-subtitle">انتقل مباشرة إلى المهام اليومية الأكثر استخداماً.</p>
+              <div class="btn-row">
+                <button type="button" class="btn btn-primary" data-jump="knowledge" data-subtab="create">إنشاء سجل معرفي</button>
+                <button type="button" class="btn btn-navy" data-jump="evidence">رفع دليل جديد</button>
+                <button type="button" class="btn btn-secondary" data-jump="reports">توليد تقرير تقني</button>
+                <button type="button" class="btn btn-secondary" data-jump="system">إعدادات الاتصال</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4 class="card-title">آخر الأنشطة (Recent Activities)</h4>
+            <p class="card-subtitle">العمليات المسجلة في الجلسة الحالية أو المسترجعة من الخادم.</p>
+            <div id="recentActivitiesContainer">
+              <p class="hint">لا توجد أنشطة مسجلة حتى الآن.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-knowledge" class="view-section">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">إدارة المعرفة التقنية</h3>
+              <p class="section-desc">إنشاء السجلات، تصفحها، البحث والتصفية، وعرض التفاصيل المنظمة.</p>
+            </div>
+          </div>
+
+          <div class="tabs-bar" id="knowledgeSubtabs">
+            <button type="button" class="tab-chip active" data-ktab="create">إنشاء سجل (Create)</button>
+            <button type="button" class="tab-chip" data-ktab="browse">تصفح وبحث (Browse)</button>
+            <button type="button" class="tab-chip" data-ktab="details">تفاصيل السجل (Details)</button>
+          </div>
+
+          <div id="ktab-create" class="card">
+            <h4 class="card-title">إنشاء سجل معرفي جديد (Save Record)</h4>
+            <p class="card-subtitle">قسّمنا الحقول إلى مجموعات واضحة لتسهيل الإدخال على الهاتف والكمبيوتر.</p>
+
+            <form id="createRecordForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="recType">نوع السجل (Record Type)</label>
+                  <select id="recType">
+                    <option value="Technical Knowledge Report" selected>Technical Knowledge Report</option>
+                    <option value="Lab Experiment">Lab Experiment</option>
+                    <option value="Troubleshooting Note">Troubleshooting Note</option>
+                    <option value="Architecture Decision">Architecture Decision</option>
+                    <option value="Project Milestone">Project Milestone</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="recDomain">المجال (Domain)</label>
+                  <select id="recDomain">
+                    <option value="Networking" selected>Networking</option>
+                    <option value="Cybersecurity">Cybersecurity</option>
+                    <option value="Cloud & DevOps">Cloud & DevOps</option>
+                    <option value="Software & AI">Software & AI</option>
+                    <option value="Mobile & Systems">Mobile & Systems</option>
+                    <option value="General">General</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="recTitle">العنوان (Title) *</label>
+                <input type="text" id="recTitle" placeholder="مثال: Understanding SNMP" required />
+              </div>
+
+              <div class="form-group">
+                <label for="recDescription">الوصف / الملخص والتفاصيل</label>
+                <textarea id="recDescription" placeholder="اكتب شرحاً واضحاً، التفاصيل العملية، الدروس المستفادة، المراجع، والخطوة التالية..."></textarea>
+              </div>
+
+              <details class="accordion">
+                <summary>الأوامر / الأكواد والبيانات الإضافية (اختياري)</summary>
+                <div class="acc-body">
+                  <div class="form-group">
+                    <label for="recCommands">الأوامر أو الكود (Commands / Code)</label>
+                    <textarea id="recCommands" class="mono" placeholder="snmpget&#10;snmpwalk"></textarea>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="recSkillLevel">مستوى الإتقان (Skill Level)</label>
+                      <select id="recSkillLevel">
+                        <option value="Practiced">Practiced</option>
+                        <option value="Foundational">Foundational</option>
+                        <option value="Applied">Applied</option>
+                        <option value="Advanced">Advanced</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="recStatus">الحالة (Status)</label>
+                      <select id="recStatus">
+                        <option value="Completed">Completed</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Draft">Draft</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </details>
+
+              <div class="btn-row">
+                <button type="submit" id="btnSaveRecord" class="btn btn-primary">Save Record</button>
+                <button type="button" id="btnClearRecordForm" class="btn btn-secondary">مسح الحقول</button>
+              </div>
+            </form>
+
+            <div id="createRecordFeedback" class="feedback-box"></div>
+          </div>
+
+          <div id="ktab-browse" class="card" style="display: none;">
+            <div class="section-header">
+              <div>
+                <h4 class="card-title">تصفح السجلات والبحث</h4>
+                <p class="card-subtitle">ابحث بالكلمات المفتاحية أو صفّ حسب المجال والحالة.</p>
+              </div>
+              <button type="button" id="btnLoadRecords" class="btn btn-secondary">تحميل السجلات من الخادم</button>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="filterSearch">بحث (العنوان / المعرّف / الوصف)</label>
+                <input type="search" id="filterSearch" placeholder="ابحث عن SNMP أو REC-..." />
+              </div>
+              <div class="form-group">
+                <label for="filterDomain">تصفية حسب المجال</label>
+                <select id="filterDomain">
+                  <option value="ALL">جميع المجالات</option>
+                  <option value="Networking">Networking</option>
+                  <option value="Cybersecurity">Cybersecurity</option>
+                  <option value="Cloud & DevOps">Cloud & DevOps</option>
+                  <option value="Software & AI">Software & AI</option>
+                  <option value="Mobile & Systems">Mobile & Systems</option>
+                  <option value="General">General</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Record ID</th>
+                    <th>العنوان</th>
+                    <th>النوع</th>
+                    <th>المجال</th>
+                    <th>الحالة</th>
+                    <th>إجراء</th>
+                  </tr>
+                </thead>
+                <tbody id="recordsTableBody">
+                  <tr>
+                    <td colspan="6" class="hint">لا توجد سجلات معروضة حالياً. اضغط «تحميل السجلات من الخادم» أو أنشئ سجلاً جديداً.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="ktab-details" class="card" style="display: none;">
+            <h4 class="card-title">تفاصيل السجل والإصدار (Record Details)</h4>
+            <p class="card-subtitle">عرض منظم لمحتوى السجل، الأوامر، الأدلة المرتبطة، وحالة الإصدار.</p>
+            <div id="recordDetailContent">
+              <p class="hint">اختر سجلاً من تبويب «تصفح وبحث» أو أنشئ سجلاً جديداً لعرض تفاصيله هنا.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-skills" class="view-section">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">إدارة المهارات المكتسبة (Skills Management)</h3>
+              <p class="section-desc">تتبّع مستوى النضج، تقدّم التعلّم، والسجلات والخبرات العملية المرتبطة بكل مهارة.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4 class="card-title">إضافة / تحديث مهارة في الجلسة</h4>
+            <form id="skillForm" class="form-row">
+              <div class="form-group">
+                <label for="skillName">اسم المهارة (Skill Name)</label>
+                <input type="text" id="skillName" placeholder="مثال: SNMP Monitoring & Net-SNMP" required />
+              </div>
+              <div class="form-group">
+                <label for="skillDomain">المجال (Domain)</label>
+                <input type="text" id="skillDomain" value="Networking" required />
+              </div>
+              <div class="form-group">
+                <label for="skillMaturity">مستوى النضج (Maturity Level)</label>
+                <select id="skillMaturity">
+                  <option value="Foundational">Foundational (تأسيسي)</option>
+                  <option value="Practiced" selected>Practiced (ممارس)</option>
+                  <option value="Applied">Applied (تطبيقي)</option>
+                  <option value="Advanced">Advanced (متقدم)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="skillExp">الخبرة العملية والسجلات المرتبطة</label>
+                <input type="text" id="skillExp" placeholder="مثال: REC-20261122-CAD820 — اختبار مفاهيم SNMP" />
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <button type="submit" class="btn btn-primary">إضافة المهارة إلى القائمة</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <h4 class="card-title">سجل المهارات (Skills Matrix)</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>المهارة</th>
+                    <th>المجال</th>
+                    <th>مستوى النضج</th>
+                    <th>تقدّم التعلّم</th>
+                    <th>الخبرة والسجلات المرتبطة</th>
+                  </tr>
+                </thead>
+                <tbody id="skillsTableBody">
+                  <tr>
+                    <td colspan="5" class="hint">لم تُسجّل مهارات بعد. أضف مهارة من النموذج أعلاه أو من سجلات المعرفة.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-experiments" class="view-section">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">التجارب العملية والمشاريع التقنية</h3>
+              <p class="section-desc">توثيق التجارب والاختبارات والأدوات والمشكلات والحلول وربطها بالمعرفة والمهارات.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4 class="card-title">تسجيل تجربة أو مشروع عملي</h4>
+            <form id="labForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="labTitle">عنوان التجربة أو المشروع</label>
+                  <input type="text" id="labTitle" placeholder="مثال: SNMPv2c Query Lab on Router/Switch" required />
+                </div>
+                <div class="form-group">
+                  <label for="labTools">الأدوات المستخدمة</label>
+                  <input type="text" id="labTools" placeholder="مثال: snmpwalk, GNS3, Linux CLI" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="labResults">نتائج الاختبارات</label>
+                <textarea id="labResults" placeholder="سجّل المخرجات الفعلية للاختبار وحالة نجاحه..."></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="labIssues">المشكلات والحلول</label>
+                  <textarea id="labIssues" placeholder="ما المشكلة التي ظهرت وكيف تم حلها؟"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="labLinks">ربط بالمعرفة والمهارات والمشاريع</label>
+                  <textarea id="labLinks" placeholder="مثال: Record REC-20261122-CAD820 | Skill: SNMP"></textarea>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">حفظ التجربة في القائمة</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h4 class="card-title">التجارب والمشاريع المسجلة</h4>
+            <div id="labsListContainer">
+              <p class="hint">لا توجد تجارب أو مشاريع مضافة حتى الآن.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-evidence" class="view-section">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">مدير الأدلة (Evidence Manager)</h3>
+              <p class="section-desc">رفع الملفات مع حساب SHA-256، التحقق من الصيغة، كشف التكرار، Safe Link، وReconcile.</p>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h4 class="card-title">رفع دليل جديد (Upload Evidence)</h4>
+              <form id="uploadEvidenceForm">
+                <div class="form-group">
+                  <label for="evRecordId">رقم السجل (Record ID) *</label>
+                  <input type="text" id="evRecordId" class="mono" placeholder="REC-20261122-EA26D2" required />
+                  <span class="hint">يُزال تلقائياً أي مسافة أو رمز أو نقطة زائدة في النهاية قبل التحقق.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="evDesc">وصف الدليل</label>
+                  <input type="text" id="evDesc" placeholder="مثال: مخرجات أمر syslog أو لقطة شاشة أو سكربت" />
+                </div>
+
+                <div class="form-group">
+                  <label for="evFile">اختر الملف *</label>
+                  <input type="file" id="evFile" required />
+                  <div id="evFileMeta" class="mono hint" style="margin-top: 6px;">لم يتم اختيار ملف بعد.</div>
+                </div>
+
+                <div class="btn-row">
+                  <button type="submit" id="btnUploadEvidence" class="btn btn-primary">Upload Evidence</button>
+                  <button type="button" id="btnSafeLink" class="btn btn-secondary">Safe Link</button>
+                  <button type="button" id="btnReconcileEvidence" class="btn btn-secondary">Reconcile</button>
+                </div>
+              </form>
+
+              <div id="evidenceFeedback" class="feedback-box"></div>
+            </div>
+
+            <div class="card">
+              <h4 class="card-title">معاينة الدليل وتفاصيله (Preview & Details)</h4>
+              <p class="card-subtitle">معاينة مناسبة للهاتف مع بصمة SHA-256، حالة التكرار، وروابط Drive الأصلية.</p>
+              <div id="evidencePreviewContainer" class="preview-box">
+                <span class="hint">اختر ملفاً أو حدد دليلاً من القائمة لمعاينته هنا.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4 class="card-title">قائمة الأدلة (Evidence List)</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>اسم الملف</th>
+                    <th>Record ID</th>
+                    <th>الحالة</th>
+                    <th>SHA-256</th>
+                    <th>Drive Link</th>
+                  </tr>
+                </thead>
+                <tbody id="evidenceTableBody">
+                  <tr>
+                    <td colspan="5" class="hint">لا توجد أدلة مسجلة في الجلسة الحالية حتى الآن.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-reports" class="view-section">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">مولّد التقارير التقنية (Report Generator)</h3>
+              <p class="section-desc">تجميع المعرفة النظرية، التطبيق العملي، الأكواد، الأدلة، والمراجع في تقرير منظم.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="reportRecordSelect">اختر Knowledge Record أو أدخل معرّفه</label>
+                <input type="text" id="reportRecordSelect" class="mono" placeholder="REC-20261122-EA26D2" />
+              </div>
+              <div class="form-group">
+                <label for="reportVersionInput">رقم الإصدار (Version)</label>
+                <input type="text" id="reportVersionInput" class="mono" value="v1.0" />
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button type="button" id="btnBuildReportPreview" class="btn btn-navy">معاينة محتويات التقرير</button>
+              <button type="button" id="btnPrintPdfReport" class="btn btn-primary">Generate PDF</button>
+              <button type="button" id="btnDownloadDocxReport" class="btn btn-secondary">Generate DOCX</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4 class="card-title">معاينة التقرير النهائي</h4>
+            <pre id="reportPreviewBox">لم يتم توليد معاينة للتقرير بعد. حدّد Record ID واضغط «معاينة محتويات التقرير».</pre>
+          </div>
+
+          <div class="card">
+            <h4 class="card-title">سجل التقارير والإصدارات (Report History)</h4>
+            <div id="reportHistoryContainer">
+              <p class="hint">لا توجد تقارير مُولّدة في هذه الجلسة بعد.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-system" class="view-section">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">إدارة النظام والصيانة (System Management)</h3>
+              <p class="section-desc">الإعدادات، فحص الاتصال (Read-Only)، المطابقة، وسجل العمليات المفصول عن الاستخدام اليومي.</p>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h4 class="card-title">إعدادات الاتصال والمصادقة (Configuration)</h4>
+              <form id="configForm">
+                <div class="form-group">
+                  <label for="cfgWebAppUrl">رابط Google Apps Script (Web App URL)</label>
+                  <input type="url" id="cfgWebAppUrl" class="mono" placeholder="https://script.google.com/macros/s/.../exec" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="cfgAuthToken">رمز الدخول السري (AUTH_TOKEN)</label>
+                  <input type="password" id="cfgAuthToken" class="mono" placeholder="أدخل الرمز السري المطابق لـ Code.gs" required />
+                </div>
+
+                <div class="btn-row">
+                  <button type="submit" id="btnSaveAndPing" class="btn btn-primary">حفظ الإعدادات واختبار الاتصال</button>
+                  <button type="button" id="btnReadOnlyHealth" class="btn btn-secondary">System Health (Read-Only)</button>
+                </div>
+              </form>
+              <div id="configFeedback" class="feedback-box"></div>
+            </div>
+
+            <div class="card">
+              <h4 class="card-title">فحص المساحة والمطابقة (Workspace & Reconcile)</h4>
+              <p class="card-subtitle">العمليات الحساسة تتطلب تأكيداً صريحاً قبل التنفيذ.</p>
+              <div class="btn-row" style="margin-bottom: 12px;">
+                <button type="button" id="btnInspectWorkspace" class="btn btn-secondary">Workspace Inspection</button>
+                <button type="button" id="btnSystemReconcile" class="btn btn-danger">Reconciliation (يتطلب تأكيد)</button>
+              </div>
+              <div id="systemInspectOutput" class="preview-box">
+                <span class="hint">لا توجد نتائج فحص بعد.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-header">
+              <div>
+                <h4 class="card-title">سجل النظام والأحداث (System Logs)</h4>
+                <p class="card-subtitle">تتبّع الطلبات، الاستجابات، وأخطاء الشبكة.</p>
+              </div>
+              <button type="button" id="btnClearLogs" class="btn btn-secondary">مسح السجل</button>
+            </div>
+            <div id="systemLogStream" class="log-stream"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE_KEYS = {
+        URL: "shamikh_labs_v3_url",
+        TOKEN: "shamikh_labs_v3_token",
+        THEME: "shamikh_labs_v3_theme",
+        RECORDS: "shamikh_labs_v3_records_cache",
+        EVIDENCE: "shamikh_labs_v3_evidence_cache",
+        SKILLS: "shamikh_labs_v3_skills_cache",
+        LABS: "shamikh_labs_v3_labs_cache",
+        REPORTS: "shamikh_labs_v3_reports_cache",
+        ACTIVITIES: "shamikh_labs_v3_activities_cache"
+      };
+
+      const VIEW_TITLES = {
+        dashboard: "لوحة التحكم (Dashboard)",
+        knowledge: "إدارة المعرفة (Knowledge)",
+        skills: "المهارات (Skills)",
+        experiments: "التجارب والمشاريع (Labs)",
+        evidence: "مدير الأدلة (Evidence)",
+        reports: "مولّد التقارير (Reports)",
+        system: "إدارة النظام (System)"
+      };
+
+      const state = {
+        activeView: "dashboard",
+        connected: false,
+        dashboardName: "",
+        records: loadJson(STORAGE_KEYS.RECORDS, []),
+        evidence: loadJson(STORAGE_KEYS.EVIDENCE, []),
+        skills: loadJson(STORAGE_KEYS.SKILLS, []),
+        labs: loadJson(STORAGE_KEYS.LABS, []),
+        reports: loadJson(STORAGE_KEYS.REPORTS, []),
+        activities: loadJson(STORAGE_KEYS.ACTIVITIES, []),
+        selectedRecord: null,
+        currentFileHash: "",
+        currentFileSize: 0,
+        currentFileBase64: "",
+        currentFileName: "",
+        currentFileMime: ""
+      };
+
+      function loadJson(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (_) {
+          return fallback;
+        }
+      }
+
+      function saveJson(key, val) {
+        try {
+          localStorage.setItem(key, JSON.stringify(val));
+        } catch (_) {}
+      }
+
+      function escapeHtml(str) {
+        return String(str ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function sanitizeRecordId(raw) {
+        return String(raw ?? "")
+          .replace(/[^\x20-\x7E]/g, "")
+          .replace(/^[^A-Za-z0-9_-]+|[^A-Za-z0-9_-]+$/g, "")
+          .trim();
+      }
+
+      function isValidRecordId(id) {
+        return /^[A-Za-z0-9_-]{4,64}$/.test(id);
+      }
+
+      function nowTime() {
+        return new Date().toTimeString().slice(0, 8);
+      }
+
+      function logEvent(level, message) {
+        const stream = document.getElementById("systemLogStream");
+        const line = document.createElement("div");
+        const cls = ["OK", "ERR", "WARN", "INFO"].includes(level) ? level.toLowerCase() : "info";
+        line.className = `log-line log-${cls}`;
+        line.textContent = `[${nowTime()}] [${level}] ${message}`;
+        stream.appendChild(line);
+        stream.scrollTop = stream.scrollHeight;
+      }
+
+      function recordActivity(title, detail, badge = "INFO") {
+        state.activities.unshift({
+          time: new Date().toLocaleString("ar-EG"),
+          title,
+          detail,
+          badge
+        });
+        state.activities = state.activities.slice(0, 25);
+        saveJson(STORAGE_KEYS.ACTIVITIES, state.activities);
+        renderActivities();
+      }
+
+      function setConnectionStatus(ok, label) {
+        state.connected = ok;
+        const pill = document.getElementById("connPill");
+        const text = document.getElementById("connPillText");
+        pill.classList.remove("ok", "err");
+        if (ok === true) {
+          pill.classList.add("ok");
+          text.textContent = label || "متصل";
+        } else if (ok === false) {
+          pill.classList.add("err");
+          text.textContent = label || "تعذّر الاتصال";
+        } else {
+          text.textContent = label || "غير متصل";
+        }
+      }
+
+      function showFeedback(elId, type, html) {
+        const box = document.getElementById(elId);
+        box.className = `feedback-box show ${type}`;
+        box.innerHTML = html;
+      }
+
+      function getConfig() {
+        const url = document.getElementById("cfgWebAppUrl").value.trim();
+        const token = document.getElementById("cfgAuthToken").value.trim();
+        return { url, token };
+      }
+
+      function saveConfigToStorage() {
+        const { url, token } = getConfig();
+        localStorage.setItem(STORAGE_KEYS.URL, url);
+        localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+        logEvent("INFO", "تم حفظ الإعدادات محلياً.");
+      }
+
+      async function apiRequest(action, payload = {}, opts = {}) {
+        const { url, token } = getConfig();
+        if (!url) {
+          throw new Error("يرجى إدخال رابط Google Apps Script (Web App URL) أولاً.");
+        }
+        const retries = opts.retries ?? 1;
+        const body = JSON.stringify({
+          action,
+          auth_token: token,
+          token,
+          ...payload
+        });
+
+        let lastErr = null;
+        for (let attempt = 0; attempt <= retries; attempt++) {
+          try {
+            const res = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body
+            });
+            const text = await res.text();
+            let parsed;
+            try {
+              parsed = JSON.parse(text);
+            } catch (_) {
+              parsed = { ok: res.ok, raw: text };
+            }
+            if (parsed && parsed.ok === false && parsed.error) {
+              throw new Error(parsed.error);
+            }
+            return parsed;
+          } catch (err) {
+            lastErr = err;
+            const msg = String(err && err.message ? err.message : err);
+            const isNetworkDrop = msg.includes("Failed to fetch") || msg.includes("NetworkError");
+            if (isNetworkDrop && attempt < retries) {
+              logEvent("WARN", `تذبذب شبكة أثناء ${action} — إعادة المحاولة (${attempt + 1}/${retries})...`);
+              await new Promise((r) => setTimeout(r, 2500));
+              continue;
+            }
+            throw err;
+          }
+        }
+        throw lastErr;
+      }
+
+      function switchView(viewName) {
+        if (!VIEW_TITLES[viewName]) return;
+        state.activeView = viewName;
+        document.querySelectorAll(".nav-btn").forEach((b) => {
+          b.classList.toggle("active", b.dataset.view === viewName);
+        });
+        document.querySelectorAll(".view-section").forEach((sec) => {
+          sec.classList.toggle("active", sec.id === `view-${viewName}`);
+        });
+        document.getElementById("topbarTitle").textContent = VIEW_TITLES[viewName];
+
+        document.getElementById("sidebar").classList.remove("open");
+        document.getElementById("drawerBackdrop").classList.remove("show");
+      }
+
+      function switchKnowledgeSubtab(tabName) {
+        document.querySelectorAll("#knowledgeSubtabs .tab-chip").forEach((c) => {
+          c.classList.toggle("active", c.dataset.ktab === tabName);
+        });
+        ["create", "browse", "details"].forEach((k) => {
+          const el = document.getElementById(`ktab-${k}`);
+          if (el) el.style.display = k === tabName ? "block" : "none";
+        });
+      }
+
+      function applyTheme(theme) {
+        const next = theme === "dark" ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem(STORAGE_KEYS.THEME, next);
+      }
+
+      function renderDashboard() {
+        const recCount = state.records.length;
+        const skillCount = state.skills.length;
+        const expCount = state.labs.filter((x) => x.kind === "Experiment").length;
+        const projCount = state.labs.filter((x) => x.kind === "Project").length;
+        const evCount = state.evidence.length;
+
+        document.getElementById("kpiRecords").textContent = String(recCount);
+        document.getElementById("kpiSkills").textContent = String(skillCount);
+        document.getElementById("kpiExperiments").textContent = String(expCount);
+        document.getElementById("kpiProjects").textContent = String(projCount);
+        document.getElementById("kpiEvidence").textContent = String(evCount);
+
+        const completedLike = state.records.filter((r) =>
+          String(r.status || "").toLowerCase().includes("complet") || String(r.status || "").includes("مكتمل")
+        ).length;
+        const pct = recCount > 0 ? Math.min(100, Math.round((completedLike / recCount) * 100)) : 0;
+        document.getElementById("learningProgressLabel").textContent = `${pct}%`;
+        document.getElementById("learningProgressBar").style.width = `${pct}%`;
+        document.getElementById("learningProgressSummary").textContent =
+          recCount > 0
+            ? `تم رصد ${completedLike} من أصل ${recCount} سجل معرفي مكتمل في البيانات المحمّلة.`
+            : "لا توجد سجلات محمّلة بعد لحساب نسبة التقدّم الفعلية.";
+      }
+
+      function renderActivities() {
+        const container = document.getElementById("recentActivitiesContainer");
+        if (!state.activities.length) {
+          container.innerHTML = '<p class="hint">لا توجد أنشطة مسجلة حتى الآن.</p>';
+          return;
+        }
+        container.innerHTML = state.activities
+          .slice(0, 8)
+          .map(
+            (a) => `
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color);">
+              <div>
+                <strong>${escapeHtml(a.title)}</strong>
+                <div class="hint" style="margin-top:2px;">${escapeHtml(a.detail)}</div>
+              </div>
+              <span class="badge">${escapeHtml(a.time)}</span>
+            </div>`
+          )
+          .join("");
+      }
+
+      function renderRecordsTable() {
+        const q = document.getElementById("filterSearch").value.trim().toLowerCase();
+        const dom = document.getElementById("filterDomain").value;
+        const tbody = document.getElementById("recordsTableBody");
+
+        const filtered = state.records.filter((r) => {
+          const matchesDom = dom === "ALL" || String(r.domain || "") === dom;
+          const hay = `${r.record_id || ""} ${r.title || ""} ${r.description || ""} ${r.type || ""}`.toLowerCase();
+          const matchesQ = !q || hay.includes(q);
+          return matchesDom && matchesQ;
+        });
+
+        if (!filtered.length) {
+          tbody.innerHTML = '<tr><td colspan="6" class="hint">لا توجد سجلات مطابقة للبحث أو التصفية.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = filtered
+          .map(
+            (r, idx) => `
+            <tr>
+              <td class="mono">${escapeHtml(r.record_id || "—")}</td>
+              <td><strong>${escapeHtml(r.title || "بدون عنوان")}</strong></td>
+              <td>${escapeHtml(r.type || "—")}</td>
+              <td><span class="badge">${escapeHtml(r.domain || "—")}</span></td>
+              <td><span class="badge ok">${escapeHtml(r.status || "Recorded")}</span></td>
+              <td><button type="button" class="icon-btn" data-open-rec="${idx}">عرض</button></td>
+            </tr>`
+          )
+          .join("");
+
+        tbody.querySelectorAll("[data-open-rec]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const item = filtered[Number(btn.dataset.openRec)];
+            openRecordDetails(item);
+          });
+        });
+      }
+
+      function openRecordDetails(rec) {
+        state.selectedRecord = rec;
+        switchKnowledgeSubtab("details");
+        const box = document.getElementById("recordDetailContent");
+        const relatedEv = state.evidence.filter((e) => e.record_id === rec.record_id);
+
+        box.innerHTML = `
+          <div class="form-row" style="margin-bottom:12px;">
+            <div><strong>Record ID:</strong> <span class="mono">${escapeHtml(rec.record_id || "—")}</span></div>
+            <div><strong>الحالة:</strong> <span class="badge ok">${escapeHtml(rec.status || "Recorded")}</span></div>
+            <div><strong>النوع:</strong> ${escapeHtml(rec.type || "—")}</div>
+            <div><strong>المجال:</strong> ${escapeHtml(rec.domain || "—")}</div>
+          </div>
+          <h5 style="margin:0 0 6px;">${escapeHtml(rec.title || "")}</h5>
+          <pre style="margin-bottom:12px;">${escapeHtml(rec.description || "لا يوجد وصف.")}</pre>
+          ${rec.commands ? `<div class="form-group"><label>الأوامر / الأكواد</label><pre>${escapeHtml(rec.commands)}</pre></div>` : ""}
+          <div class="btn-row" style="margin-bottom:12px;">
+            ${rec.folder_url ? `<a class="btn btn-secondary" href="${escapeHtml(rec.folder_url)}" target="_blank" rel="noopener">فتح مجلد Drive</a>` : ""}
+            ${rec.report_url ? `<a class="btn btn-secondary" href="${escapeHtml(rec.report_url)}" target="_blank" rel="noopener">فتح التقرير في Drive</a>` : ""}
+            <button type="button" class="btn btn-primary" id="btnSendToReportGen">توليد تقرير لهذا السجل</button>
+          </div>
+          <div><strong>الأدلة المرتبطة في الجلسة (${relatedEv.length}):</strong> ${
+            relatedEv.length ? relatedEv.map((e) => `<span class="badge">${escapeHtml(e.file_name)}</span>`).join(" ") : '<span class="hint">لا توجد أدلة مرتبطة معروضة.</span>'
+          }</div>
+        `;
+
+        const repBtn = document.getElementById("btnSendToReportGen");
+        if (repBtn) {
+          repBtn.addEventListener("click", () => {
+            document.getElementById("reportRecordSelect").value = rec.record_id || "";
+            switchView("reports");
+            buildReportPreview();
+          });
+        }
+      }
+
+      function renderSkills() {
+        const tbody = document.getElementById("skillsTableBody");
+        if (!state.skills.length) {
+          tbody.innerHTML = '<tr><td colspan="5" class="hint">لم تُسجّل مهارات بعد.</td></tr>';
+          return;
+        }
+        const levelMap = { Foundational: 25, Practiced: 55, Applied: 80, Advanced: 100 };
+        tbody.innerHTML = state.skills
+          .map((s) => {
+            const pct = levelMap[s.maturity] ?? 50;
+            return `
+              <tr>
+                <td><strong>${escapeHtml(s.name)}</strong></td>
+                <td><span class="badge">${escapeHtml(s.domain)}</span></td>
+                <td>${escapeHtml(s.maturity)}</td>
+                <td style="min-width:130px;">
+                  <span class="mono">${pct}%</span>
+                  <div class="progress-track"><div class="progress-fill" style="width:${pct}%;"></div></div>
+                </td>
+                <td>${escapeHtml(s.exp || "—")}</td>
+              </tr>`;
+          })
+          .join("");
+      }
+
+      function renderLabs() {
+        const container = document.getElementById("labsListContainer");
+        if (!state.labs.length) {
+          container.innerHTML = '<p class="hint">لا توجد تجارب أو مشاريع مضافة حتى الآن.</p>';
+          return;
+        }
+        container.innerHTML = state.labs
+          .map(
+            (l) => `
+            <div class="card" style="background:var(--bg-subtle);margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+                <strong>${escapeHtml(l.title)}</strong>
+                <span class="badge">${escapeHtml(l.tools || "Lab")}</span>
+              </div>
+              ${l.results ? `<p style="margin:8px 0 4px;"><strong>النتائج:</strong> ${escapeHtml(l.results)}</p>` : ""}
+              ${l.issues ? `<p style="margin:4px 0;"><strong>المشكلات والحلول:</strong> ${escapeHtml(l.issues)}</p>` : ""}
+              ${l.links ? `<p class="hint" style="margin:4px 0 0;"><strong>الروابط:</strong> ${escapeHtml(l.links)}</p>` : ""}
+            </div>`
+          )
+          .join("");
+      }
+
+      async function computeSha256Hex(file) {
+        const buf = await file.arrayBuffer();
+        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+        const bytes = new Uint8Array(hashBuf);
+        return Array.from(bytes)
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
+      function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const res = String(reader.result || "");
+            const commaIdx = res.indexOf(",");
+            resolve(commaIdx >= 0 ? res.slice(commaIdx + 1) : res);
+          };
+          reader.onerror = () => reject(new Error("تعذّر قراءة محتوى الملف."));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function renderEvidenceTable() {
+        const tbody = document.getElementById("evidenceTableBody");
+        if (!state.evidence.length) {
+          tbody.innerHTML = '<tr><td colspan="5" class="hint">لا توجد أدلة مسجلة في الجلسة الحالية حتى الآن.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = state.evidence
+          .map(
+            (e) => `
+            <tr>
+              <td><strong>${escapeHtml(e.file_name)}</strong></td>
+              <td class="mono">${escapeHtml(e.record_id)}</td>
+              <td><span class="badge ${e.status === "uploaded" ? "ok" : "warn"}">${escapeHtml(e.status || "uploaded")}</span></td>
+              <td class="mono">${escapeHtml((e.sha256 || "").slice(0, 16))}…</td>
+              <td>${e.file_url ? `<a href="${escapeHtml(e.file_url)}" target="_blank" rel="noopener">فتح في Drive</a>` : "—"}</td>
+            </tr>`
+          )
+          .join("");
+      }
+
+      function buildReportPreview() {
+        const recId = sanitizeRecordId(document.getElementById("reportRecordSelect").value);
+        const ver = document.getElementById("reportVersionInput").value.trim() || "v1.0";
+        const rec = state.records.find((r) => r.record_id === recId) || {
+          record_id: recId || "UNSPECIFIED",
+          title: state.selectedRecord?.title || "Technical Knowledge Entry",
+          type: state.selectedRecord?.type || "Technical Knowledge Report",
+          domain: state.selectedRecord?.domain || "Networking",
+          description: state.selectedRecord?.description || "المعرفة النظرية والتطبيق العملي المرتبط بالسجل.",
+          commands: state.selectedRecord?.commands || ""
+        };
+        const linkedEv = state.evidence.filter((e) => !recId || e.record_id === recId);
+
+        const md = [
+          `# SHAMIKH LABS — TECHNICAL KNOWLEDGE REPORT (${ver})`,
+          `Record ID: ${rec.record_id}`,
+          `Title: ${rec.title}`,
+          `Type: ${rec.type} | Domain: ${rec.domain}`,
+          `Generated At: ${new Date().toISOString()}`,
+          ``,
+          `## 1. Theoretical Knowledge & Practical Summary`,
+          rec.description || "-",
+          ``,
+          `## 2. Commands & Technical Artifacts`,
+          rec.commands || "No commands recorded.",
+          ``,
+          `## 3. Linked Evidence (${linkedEv.length})`,
+          linkedEv.length
+            ? linkedEv.map((e) => `- ${e.file_name} | SHA-256: ${e.sha256 || "N/A"} | Status: ${e.status || "uploaded"}`).join("\n")
+            : "- No evidence items linked in current session."
+        ].join("\n");
+
+        document.getElementById("reportPreviewBox").textContent = md;
+
+        state.reports.unshift({
+          record_id: rec.record_id,
+          version: ver,
+          title: rec.title,
+          time: new Date().toLocaleString("ar-EG"),
+          content: md
+        });
+        state.reports = state.reports.slice(0, 15);
+        saveJson(STORAGE_KEYS.REPORTS, state.reports);
+        renderReportHistory();
+        return md;
+      }
+
+      function renderReportHistory() {
+        const box = document.getElementById("reportHistoryContainer");
+        if (!state.reports.length) {
+          box.innerHTML = '<p class="hint">لا توجد تقارير مُولّدة في هذه الجلسة بعد.</p>';
+          return;
+        }
+        box.innerHTML = state.reports
+          .map(
+            (rep, i) => `
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color);flex-wrap:wrap;">
+              <div>
+                <strong class="mono">${escapeHtml(rep.record_id)}</strong> — <span>${escapeHtml(rep.title)}</span>
+                <span class="badge">${escapeHtml(rep.version)}</span>
+              </div>
+              <div class="btn-row">
+                <span class="hint">${escapeHtml(rep.time)}</span>
+                <button type="button" class="icon-btn" data-rep-idx="${i}">معاينة</button>
+              </div>
+            </div>`
+          )
+          .join("");
+
+        box.querySelectorAll("[data-rep-idx]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const item = state.reports[Number(btn.dataset.repIdx)];
+            if (item) {
+              document.getElementById("reportRecordSelect").value = item.record_id;
+              document.getElementById("reportVersionInput").value = item.version;
+              document.getElementById("reportPreviewBox").textContent = item.content;
+            }
+          });
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        applyTheme(localStorage.getItem(STORAGE_KEYS.THEME) || "light");
+        document.getElementById("cfgWebAppUrl").value = localStorage.getItem(STORAGE_KEYS.URL) || "";
+        document.getElementById("cfgAuthToken").value = localStorage.getItem(STORAGE_KEYS.TOKEN) || "";
+
+        logEvent("INFO", "الواجهة جاهزة على المتصفح (SHAMIKH LABS v3.0 — وضع قراءة فقط بدون كتابة تلقائية).");
+        renderDashboard();
+        renderActivities();
+        renderRecordsTable();
+        renderSkills();
+        renderLabs();
+        renderEvidenceTable();
+        renderReportHistory();
+
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          btn.addEventListener("click", () => switchView(btn.dataset.view));
+        });
+
+        document.querySelectorAll("[data-jump]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            switchView(btn.dataset.jump);
+            if (btn.dataset.subtab) switchKnowledgeSubtab(btn.dataset.subtab);
+          });
+        });
+
+        const menuBtn = document.getElementById("menuToggleBtn");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("drawerBackdrop");
+        menuBtn.addEventListener("click", () => {
+          sidebar.classList.toggle("open");
+          backdrop.classList.toggle("show");
+        });
+        backdrop.addEventListener("click", () => {
+          sidebar.classList.remove("open");
+          backdrop.classList.remove("show");
+        });
+
+        document.getElementById("themeToggleBtn").addEventListener("click", () => {
+          const cur = document.documentElement.getAttribute("data-theme");
+          applyTheme(cur === "dark" ? "light" : "dark");
+        });
+
+        document.querySelectorAll("#knowledgeSubtabs .tab-chip").forEach((chip) => {
+          chip.addEventListener("click", () => switchKnowledgeSubtab(chip.dataset.ktab));
+        });
+
+        async function runPingCheck() {
+          saveConfigToStorage();
+          setConnectionStatus(null, "جاري الفحص...");
+          logEvent("INFO", "جاري فحص الاتصال بلوحة البيانات...");
+          try {
+            const res = await apiRequest("ping", {}, { retries: 1 });
+            const dashName = res.dashboard || res.dashboard_name || "Shamikh_Technical_Knowledge_Dashboard";
+            state.dashboardName = dashName;
+            setConnectionStatus(true, "متصل");
+            logEvent("OK", `Connected to Dashboard: ${dashName}`);
+            recordActivity("فحص الاتصال", `متصل بـ ${dashName}`, "OK");
+            showFeedback("configFeedback", "ok", `<strong>الاتصال ناجح:</strong> متصل بـ <span class="mono">${escapeHtml(dashName)}</span>.`);
+          } catch (err) {
+            setConnectionStatus(false, "تعذّر الاتصال");
+            const msg = String(err && err.message ? err.message : err);
+            logEvent("ERR", msg);
+            showFeedback("configFeedback", "err", `<strong>تعذّر الاتصال:</strong> ${escapeHtml(msg)}`);
+          }
+        }
+
+        document.getElementById("configForm").addEventListener("submit", (e) => {
+          e.preventDefault();
+          runPingCheck();
+        });
+
+        document.getElementById("btnReadOnlyHealth").addEventListener("click", () => {
+          runPingCheck();
+        });
+
+        document.getElementById("btnRefreshOverview").addEventListener("click", async () => {
+          await runPingCheck();
+          try {
+            const res = await apiRequest("list_records", { limit: 50 }, { retries: 1 });
+            if (Array.isArray(res.records)) {
+              state.records = res.records;
+              saveJson(STORAGE_KEYS.RECORDS, state.records);
+              renderRecordsTable();
+            }
+          } catch (_) {}
+          renderDashboard();
+        });
+
+        document.getElementById("createRecordForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const title = document.getElementById("recTitle").value.trim();
+          const type = document.getElementById("recType").value;
+          const domain = document.getElementById("recDomain").value;
+          const description = document.getElementById("recDescription").value.trim();
+          const commands = document.getElementById("recCommands").value.trim();
+          const skillLevel = document.getElementById("recSkillLevel").value;
+          const status = document.getElementById("recStatus").value;
+
+          if (!title) {
+            showFeedback("createRecordFeedback", "warn", "يرجى إدخال عنوان السجل (Title).");
+            return;
+          }
+
+          const btn = document.getElementById("btnSaveRecord");
+          btn.disabled = true;
+          logEvent("INFO", `جاري إنشاء السجل: ${title}...`);
+
+          try {
+            const res = await apiRequest(
+              "create_record",
+              { title, type, domain, description, commands, skill_level: skillLevel, status },
+              { retries: 1 }
+            );
+            const recordId = sanitizeRecordId(res.record_id || res.id || `REC-${Date.now()}`);
+            const newRec = {
+              record_id: recordId,
+              title,
+              type,
+              domain,
+              description,
+              commands,
+              status,
+              folder_url: res.folder_url || "",
+              report_url: res.report_url || ""
+            };
+            state.records.unshift(newRec);
+            saveJson(STORAGE_KEYS.RECORDS, state.records);
+            renderRecordsTable();
+            renderDashboard();
+            document.getElementById("evRecordId").value = recordId;
+            document.getElementById("reportRecordSelect").value = recordId;
+
+            logEvent("OK", `تم إنشاء السجل: ${recordId}`);
+            recordActivity("إنشاء سجل معرفي", `${recordId} — ${title}`, "CREATED");
+            showFeedback(
+              "createRecordFeedback",
+              "ok",
+              `<strong>تم حفظ السجل بنجاح:</strong> <span class="mono">${escapeHtml(recordId)}</span>` +
+                (res.folder_url ? ` — <a href="${escapeHtml(res.folder_url)}" target="_blank" rel="noopener">فتح المجلد</a>` : "")
+            );
+          } catch (err) {
+            const msg = String(err && err.message ? err.message : err);
+            logEvent("ERR", msg);
+            showFeedback("createRecordFeedback", "err", `<strong>فشل حفظ السجل:</strong> ${escapeHtml(msg)}`);
+          } finally {
+            btn.disabled = false;
+          }
+        });
+
+        document.getElementById("btnClearRecordForm").addEventListener("click", () => {
+          document.getElementById("createRecordForm").reset();
+          document.getElementById("createRecordFeedback").className = "feedback-box";
+        });
+
+        document.getElementById("filterSearch").addEventListener("input", renderRecordsTable);
+        document.getElementById("filterDomain").addEventListener("change", renderRecordsTable);
+
+        document.getElementById("btnLoadRecords").addEventListener("click", async () => {
+          try {
+            const res = await apiRequest("list_records", { limit: 100 }, { retries: 1 });
+            if (Array.isArray(res.records)) {
+              state.records = res.records;
+              saveJson(STORAGE_KEYS.RECORDS, state.records);
+              renderDashboard();
+              logEvent("OK", `تم تحميل ${res.records.length} سجل من الخادم.`);
+            } else {
+              logEvent("INFO", "تم عرض السجلات المتوفرة محلياً في الجلسة.");
+            }
+          } catch (err) {
+            logEvent("INFO", `تعذّر الاستعلام عن قائمة السجلات (${err.message}) — عرض البيانات الحالية.`);
+          }
+          renderRecordsTable();
+        });
+
+        document.getElementById("skillForm").addEventListener("submit", (e) => {
+          e.preventDefault();
+          const name = document.getElementById("skillName").value.trim();
+          const domain = document.getElementById("skillDomain").value.trim() || "General";
+          const maturity = document.getElementById("skillMaturity").value;
+          const exp = document.getElementById("skillExp").value.trim();
+          if (!name) return;
+
+          state.skills.unshift({ name, domain, maturity, exp });
+          saveJson(STORAGE_KEYS.SKILLS, state.skills);
+          renderSkills();
+          renderDashboard();
+          recordActivity("إضافة مهارة", `${name} (${maturity})`, "SKILL");
+          document.getElementById("skillForm").reset();
+        });
+
+        document.getElementById("labForm").addEventListener("submit", (e) => {
+          e.preventDefault();
+          const title = document.getElementById("labTitle").value.trim();
+          const tools = document.getElementById("labTools").value.trim();
+          const results = document.getElementById("labResults").value.trim();
+          const issues = document.getElementById("labIssues").value.trim();
+          const links = document.getElementById("labLinks").value.trim();
+          if (!title) return;
+
+          state.labs.unshift({ kind: "Experiment", title, tools, results, issues, links });
+          saveJson(STORAGE_KEYS.LABS, state.labs);
+          renderLabs();
+          renderDashboard();
+          recordActivity("تسجيل تجربة عملية", title, "LAB");
+          document.getElementById("labForm").reset();
+        });
+
+        const evFileInput = document.getElementById("evFile");
+        evFileInput.addEventListener("change", async () => {
+          const file = evFileInput.files && evFileInput.files[0];
+          const metaEl = document.getElementById("evFileMeta");
+          const prevEl = document.getElementById("evidencePreviewContainer");
+          state.currentFileHash = "";
+          state.currentFileSize = 0;
+          state.currentFileBase64 = "";
+          state.currentFileName = "";
+          state.currentFileMime = "";
+
+          if (!file) {
+            metaEl.textContent = "لم يتم اختيار ملف بعد.";
+            prevEl.innerHTML = '<span class="hint">اختر ملفاً أو حدد دليلاً من القائمة لمعاينته هنا.</span>';
+            return;
+          }
+
+          metaEl.textContent = `جاري حساب SHA-256 (${file.size} bytes)...`;
+          try {
+            const [hash, b64] = await Promise.all([computeSha256Hex(file), fileToBase64(file)]);
+            state.currentFileHash = hash;
+            state.currentFileSize = file.size;
+            state.currentFileBase64 = b64;
+            state.currentFileName = file.name;
+            state.currentFileMime = file.type || "application/octet-stream";
+
+            metaEl.textContent = `SHA-256 (${file.size} bytes): ${hash}`;
+
+            let mediaHtml = `<span class="hint">معاينة الملف: ${escapeHtml(file.name)} (${file.size} bytes)</span>`;
+            if (file.type.startsWith("image/")) {
+              const objUrl = URL.createObjectURL(file);
+              mediaHtml = `<div><strong>معاينة الصورة:</strong> ${escapeHtml(file.name)}</div><img src="${objUrl}" alt="${escapeHtml(file.name)}" />`;
+            } else if (file.size <= 32768 && (file.type.startsWith("text/") || /\.(txt|md|py|json|log|csv|sh)$/i.test(file.name))) {
+              const snippet = await file.text();
+              mediaHtml = `<div><strong>معاينة نصية:</strong> ${escapeHtml(file.name)}</div><pre style="margin-top:8px;">${escapeHtml(snippet.slice(0, 1200))}</pre>`;
+            }
+            prevEl.innerHTML = `${mediaHtml}<div class="mono hint" style="margin-top:8px;">SHA-256: ${escapeHtml(hash)}</div>`;
+          } catch (err) {
+            metaEl.textContent = `تعذّر حساب SHA-256: ${err.message}`;
+          }
+        });
+
+        document.getElementById("uploadEvidenceForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const cleanId = sanitizeRecordId(document.getElementById("evRecordId").value);
+          document.getElementById("evRecordId").value = cleanId;
+
+          if (!isValidRecordId(cleanId)) {
+            logEvent("ERR", `Invalid Record ID format: "${cleanId}"`);
+            showFeedback(
+              "evidenceFeedback",
+              "err",
+              `<strong>صيغة Record ID غير صحيحة:</strong> القيمة المقروءة <span class="mono">${escapeHtml(cleanId || "(فارغ)")}</span> غير مطابقة للصيغة (مثال: <span class="mono">REC-20261122-EA26D2</span>).`
+            );
+            return;
+          }
+
+          if (!state.currentFileBase64 || !state.currentFileName) {
+            showFeedback("evidenceFeedback", "warn", "يرجى اختيار ملف أولاً وانتظار حساب بصمة SHA-256.");
+            return;
+          }
+
+          const btn = document.getElementById("btnUploadEvidence");
+          btn.disabled = true;
+          logEvent("INFO", `جاري رفع ${state.currentFileName}...`);
+
+          try {
+            const descVal = document.getElementById("evDesc").value.trim();
+            const res = await apiRequest(
+              "upload_evidence",
+              {
+                record_id: cleanId,
+                recordId: cleanId,
+                description: descVal,
+                file_name: state.currentFileName,
+                filename: state.currentFileName,
+                fileName: state.currentFileName,
+                mime_type: state.currentFileMime,
+                mimeType: state.currentFileMime,
+                file_base64: state.currentFileBase64,
+                base64: state.currentFileBase64,
+                fileBase64: state.currentFileBase64,
+                content: state.currentFileBase64,
+                sha256: state.currentFileHash,
+                size: state.currentFileSize
+              },
+              { retries: 1 }
+            );
+
+            const status = res.duplicate ? "duplicate" : res.status || "uploaded";
+            const evItem = {
+              record_id: cleanId,
+              file_name: state.currentFileName,
+              sha256: state.currentFileHash,
+              status,
+              file_url: res.file_url || res.url || ""
+            };
+            state.evidence.unshift(evItem);
+            saveJson(STORAGE_KEYS.EVIDENCE, state.evidence);
+            renderEvidenceTable();
+            renderDashboard();
+
+            logEvent("OK", `تم رفع ${state.currentFileName} (${status})`);
+            recordActivity("رفع دليل", `${state.currentFileName} -> ${cleanId} (${status})`, "EVIDENCE");
+            showFeedback(
+              "evidenceFeedback",
+              "ok",
+              `<strong>تمت العملية:</strong> <span class="mono">${escapeHtml(state.currentFileName)}</span> (<span class="mono">${escapeHtml(status)}</span>)` +
+                (evItem.file_url ? ` — <a href="${escapeHtml(evItem.file_url)}" target="_blank" rel="noopener">رابط الملف في Drive</a>` : "")
+            );
+          } catch (err) {
+            const msg = String(err && err.message ? err.message : err);
+            logEvent("ERR", msg);
+            showFeedback("evidenceFeedback", "err", `<strong>فشل رفع الدليل:</strong> ${escapeHtml(msg)}`);
+          } finally {
+            btn.disabled = false;
+          }
+        });
+
+        document.getElementById("btnSafeLink").addEventListener("click", async () => {
+          const cleanId = sanitizeRecordId(document.getElementById("evRecordId").value);
+          document.getElementById("evRecordId").value = cleanId;
+          if (!isValidRecordId(cleanId)) {
+            showFeedback("evidenceFeedback", "warn", "أدخل <span class=\"mono\">Record ID</span> صحيحاً أولاً لتنفيذ Safe Link.");
+            return;
+          }
+          try {
+            logEvent("INFO", `تنفيذ Safe Link للسجل ${cleanId}...`);
+            const res = await apiRequest("safe_link", { record_id: cleanId, recordId: cleanId }, { retries: 1 });
+            logEvent("OK", `Safe Link اكتمل للسجل ${cleanId}`);
+            showFeedback("evidenceFeedback", "ok", `<strong>Safe Link:</strong> تم التحقق والربط للسجل <span class="mono">${escapeHtml(cleanId)}</span>.` + (res.message ? ` ${escapeHtml(res.message)}` : ""));
+          } catch (err) {
+            const msg = String(err && err.message ? err.message : err);
+            logEvent("WARN", `Safe Link: ${msg}`);
+            showFeedback("evidenceFeedback", "warn", `<strong>ملاحظة Safe Link:</strong> ${escapeHtml(msg)}`);
+          }
+        });
+
+        async function runReconcileAction(targetBoxId) {
+          const cleanId = sanitizeRecordId(document.getElementById("evRecordId").value);
+          try {
+            logEvent("INFO", "بدء عملية المطابقة Reconcile...");
+            const res = await apiRequest("reconcile", { record_id: cleanId || undefined, recordId: cleanId || undefined }, { retries: 1 });
+            logEvent("OK", "اكتملت عملية المطابقة Reconcile.");
+            showFeedback(targetBoxId, "ok", `<strong>Reconcile:</strong> اكتملت المطابقة.` + (res.summary ? ` ${escapeHtml(res.summary)}` : ""));
+          } catch (err) {
+            const msg = String(err && err.message ? err.message : err);
+            logEvent("WARN", `Reconcile: ${msg}`);
+            showFeedback(targetBoxId, "warn", `<strong>ملاحظة Reconcile:</strong> ${escapeHtml(msg)} — إذا لم يكن اسم الإجراء مفعّلاً في <span class="mono">Code.gs</span> يمكنك تجاهله مؤقتاً.`);
+          }
+        }
+
+        document.getElementById("btnReconcileEvidence").addEventListener("click", () => {
+          runReconcileAction("evidenceFeedback");
+        });
+
+        document.getElementById("btnBuildReportPreview").addEventListener("click", buildReportPreview);
+
+        document.getElementById("btnPrintPdfReport").addEventListener("click", () => {
+          const content = document.getElementById("reportPreviewBox").textContent;
+          const win = window.open("", "_blank");
+          if (!win) {
+            showFeedback("createRecordFeedback", "warn", "تعذّر فتح نافذة الطباعة؛ اسمح بالنوافذ المنبثقة أو استخدم معاينة التقرير.");
+            return;
+          }
+          win.document.write(`<pre style="font-family:monospace;white-space:pre-wrap;padding:24px;">${escapeHtml(content)}</pre>`);
+          win.document.close();
+          win.focus();
+          win.print();
+        });
+
+        document.getElementById("btnDownloadDocxReport").addEventListener("click", () => {
+          const content = buildReportPreview();
+          const recId = sanitizeRecordId(document.getElementById("reportRecordSelect").value) || "report";
+          const blob = new Blob(["\ufeff" + content], { type: "application/msword;charset=utf-8" });
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = `${recId}_Report.doc`;
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+        });
+
+        document.getElementById("btnInspectWorkspace").addEventListener("click", () => {
+          const { url } = getConfig();
+          document.getElementById("systemInspectOutput").innerHTML = `
+            <div><strong>حالة الاتصال:</strong> ${state.connected ? "متصل" : "غير متصل"}</div>
+            <div><strong>الرابط المضبوط:</strong> <span class="mono">${escapeHtml(url || "غير مضبوط")}</span></div>
+            <div><strong>السجلات في الجلسة:</strong> <span class="mono">${state.records.length}</span> | <strong>الأدلة:</strong> <span class="mono">${state.evidence.length}</span></div>
+          `;
+          logEvent("INFO", "تم فحص حالة مساحة العمل محلياً.");
+        });
+
+        document.getElementById("btnSystemReconcile").addEventListener("click", () => {
+          const ok = window.confirm("تأكيد عملية المطابقة (Reconciliation): هل ترغب في المتابعة الآن؟");
+          if (!ok) {
+            logEvent("INFO", "تم إلغاء عملية المطابقة بناءً على طلب المستخدم.");
+            return;
+          }
+          runReconcileAction("configFeedback");
+        });
+
+        document.getElementById("btnClearLogs").addEventListener("click", () => {
+          document.getElementById("systemLogStream").innerHTML = "";
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
